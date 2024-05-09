@@ -11,7 +11,7 @@ Welcome to the PlantCare Admin Panel Backend repository! This repository contain
 
 ## Installation of Node modules
 
-cd plantcare-admin-backend
+cd plantcare-admin-backend <br/>
 npm install
 
 
