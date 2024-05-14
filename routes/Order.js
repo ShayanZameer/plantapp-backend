@@ -268,4 +268,43 @@ router.get('/firstFourOrders', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+
+router.put('/orders/:orderId/confirm', async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const updatedOrder = await Order.findByIdAndUpdate(orderId, { status: "Confirmed" }, { new: true });
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.error('Error confirming order:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+router.put('/orders/:orderId/cancel', async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const updatedOrder = await Order.findByIdAndUpdate(orderId, { status: "Cancelled" }, { new: true });
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.error('Error cancelling order:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = router;

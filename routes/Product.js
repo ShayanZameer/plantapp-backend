@@ -184,11 +184,22 @@ router.get("/displayAllProducts", async (req, res) => {
 
 
 
-// // Route to edit a product by ID
-// router.put('/editProduct/:id', async (req, res) => {
+
+
+
+// router.put('/editProduct/:id', upload.single('image'), async (req, res) => {
 //   try {
+
+//     console.log(req.file);
 //     const { id } = req.params; // Get product ID from URL parameter
 //     const updatedProductData = req.body; // Get updated product data from request body
+
+//     // If there's an uploaded image, update the product data with the image file path
+//     if (req.file) {
+//       // Assuming you're storing the image URL in the database
+//       updatedProductData.image = req.file.path; // Update image field with the file path
+//     }
+
 //     // Find the product by ID and update it with the new data
 //     const updatedProduct = await Product.findByIdAndUpdate(id, updatedProductData, { new: true });
 //     if (!updatedProduct) {
@@ -206,27 +217,43 @@ router.get("/displayAllProducts", async (req, res) => {
 
 router.put('/editProduct/:id', upload.single('image'), async (req, res) => {
   try {
-    const { id } = req.params; // Get product ID from URL parameter
-    const updatedProductData = req.body; // Get updated product data from request body
+    console.log(req.file); // Logging to see what the file object contains
+    const { id } = req.params;
+    const updatedProductData = req.body;
 
-    // If there's an uploaded image, update the product data with the image file path
+    // Check if there is an uploaded image
     if (req.file) {
-      // Assuming you're storing the image URL in the database
-      updatedProductData.image = req.file.path; // Update image field with the file path
+      // Check how the image is stored: as a buffer or a path
+      if (req.file.buffer) {
+        // Assuming you want to convert the buffer to base64 and save it in the database
+        const imageBase64 = req.file.buffer.toString('base64');
+        updatedProductData.image = `data:${req.file.mimetype};base64,${imageBase64}`;
+      } else if (req.file.path) {
+        // If the image is stored on the disk and the path is provided
+        updatedProductData.image = req.file.path;
+      }
     }
 
-    // Find the product by ID and update it with the new data
-    const updatedProduct = await Product.findByIdAndUpdate(id, updatedProductData, { new: true });
+    // Use the findByIdAndUpdate method to update the product
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      updatedProductData,
+      { new: true } // This option returns the document after update was applied
+    );
+
+    // Check if the product was found and updated
     if (!updatedProduct) {
       return res.status(404).json({ error: 'Product not found' });
     }
-    // Return the updated product
+
+    // Send back the updated product
     res.json(updatedProduct);
   } catch (error) {
     console.error('Error updating product:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 
