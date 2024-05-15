@@ -5,6 +5,7 @@ const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   stock: { type: String, required: true },
+  weight:{type:String, required: true},
 
   imageType: { type: String, enum: ["base64", "cloudinary", "gridfs"] },
 

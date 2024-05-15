@@ -65,14 +65,14 @@ router.post("/addProduct", upload.single("image"), async (req, res) => {
   try {
 
     // console.log("endpoint hits");
-    const { name, stock, imageType } = req.body;
+    const { name, stock, imageType,weight } = req.body;
     const price = Number(req.body.price);
 
     if (isNaN(price)) {
       return res.status(400).json({ message: "Invalid price value." });
     }
 
-    if (!name || !price || !stock || !imageType) {
+    if (!name || !price || !stock || !imageType || !weight) {
       return res
         .status(400)
         .json({ message: "Please provide all required fields." });
@@ -102,6 +102,7 @@ router.post("/addProduct", upload.single("image"), async (req, res) => {
         name,
         price,
         stock,
+        weight,
         image: imageUrl,
         imageType,
       });
@@ -126,8 +127,9 @@ router.post("/addProduct", upload.single("image"), async (req, res) => {
         
         price,
         stock,
-        image: imageUrl,
+        weight,
         imageType,
+        image: imageUrl,
       });
 
       // Save the new product to the database
@@ -153,6 +155,7 @@ router.post("/addProduct", upload.single("image"), async (req, res) => {
           
           price,
           stock,
+          weight,
           image: imageUrl,
           imageType,
         });
@@ -187,31 +190,7 @@ router.get("/displayAllProducts", async (req, res) => {
 
 
 
-// router.put('/editProduct/:id', upload.single('image'), async (req, res) => {
-//   try {
 
-//     console.log(req.file);
-//     const { id } = req.params; // Get product ID from URL parameter
-//     const updatedProductData = req.body; // Get updated product data from request body
-
-//     // If there's an uploaded image, update the product data with the image file path
-//     if (req.file) {
-//       // Assuming you're storing the image URL in the database
-//       updatedProductData.image = req.file.path; // Update image field with the file path
-//     }
-
-//     // Find the product by ID and update it with the new data
-//     const updatedProduct = await Product.findByIdAndUpdate(id, updatedProductData, { new: true });
-//     if (!updatedProduct) {
-//       return res.status(404).json({ error: 'Product not found' });
-//     }
-//     // Return the updated product
-//     res.json(updatedProduct);
-//   } catch (error) {
-//     console.error('Error updating product:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
 
 
 
